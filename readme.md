@@ -10,4 +10,4 @@
 
 ## math
 
-[math](./math.jpg)
+![math](./math.jpg)
