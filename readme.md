@@ -11,3 +11,7 @@
 ## math
 
 ![math](./math.jpg)
+
+## sandwich attacks
+
+One possible mitigation to sandwich attacks might be to have a delay of X blocks between minting and redeeming tokens... ie. a buyer cannot redeem until 25 blocks have passed since their mint... 
