@@ -79,6 +79,7 @@ contract BondingCurveTokenTest is Test {
         console.log("BCT balance:", bondingCurveToken.balanceOf(jordan));
 
         console.log("PCT balance:", purchaseToken.balanceOf(jordan));
+        // this test will fail because of rounding errors / precision loss
         // assertEq(purchaseToken.balanceOf(jordan), initBalance);
     }
 }
