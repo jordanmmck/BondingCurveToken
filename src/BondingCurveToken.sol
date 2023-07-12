@@ -15,12 +15,11 @@ contract BondingCurveToken is ERC1363, IERC1363Receiver, IERC1363Spender {
         purchaseToken = _purchaseToken;
     }
 
-    function onTransferReceived(
-        address,
-        address sender,
-        uint256 amount,
-        bytes calldata
-    ) external override returns (bytes4) {
+    function onTransferReceived(address, address sender, uint256 amount, bytes calldata)
+        external
+        override
+        returns (bytes4)
+    {
         // operator should be same as _msgSender. should i use operator?
         require(_msgSender() == purchaseToken, "only purchaseToken can mint");
         require(amount > 0, "amount must be greater than 0");
@@ -30,19 +29,12 @@ contract BondingCurveToken is ERC1363, IERC1363Receiver, IERC1363Spender {
         return IERC1363Receiver.onTransferReceived.selector;
     }
 
-    function onApprovalReceived(
-        address sender,
-        uint256 amount,
-        bytes calldata
-    ) external override returns (bytes4) {
+    function onApprovalReceived(address sender, uint256 amount, bytes calldata) external override returns (bytes4) {
         require(_msgSender() == purchaseToken, "only purchaseToken can mint");
         require(amount > 0, "amount must be greater than 0");
 
         // should i use require here, or check just that `true` is returned?
-        require(
-            IERC1363(purchaseToken).transferFrom(sender, address(this), amount),
-            "transferFrom failed"
-        );
+        require(IERC1363(purchaseToken).transferFrom(sender, address(this), amount), "transferFrom failed");
         _mintOnCurve(sender, amount);
 
         // why do we return this?

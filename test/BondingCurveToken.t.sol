@@ -19,9 +19,7 @@ contract BondingCurveTokenTest is Test {
     }
 
     function _mint(uint256 amount) private {
-        (bool ok, ) = address(bondingCurveToken).call{value: amount}(
-            abi.encodeWithSignature("_mintOnCurve()")
-        );
+        (bool ok,) = address(bondingCurveToken).call{value: amount}(abi.encodeWithSignature("_mintOnCurve()"));
         require(ok, "send failed");
     }
 
@@ -58,14 +56,8 @@ contract BondingCurveTokenTest is Test {
         vm.prank(sam);
         purchaseToken.transferAndCall(address(bondingCurveToken), 1e18);
 
-        assertGt(
-            bondingCurveToken.balanceOf(jordan),
-            bondingCurveToken.balanceOf(vitalik)
-        );
-        assertGt(
-            bondingCurveToken.balanceOf(vitalik),
-            bondingCurveToken.balanceOf(sam)
-        );
+        assertGt(bondingCurveToken.balanceOf(jordan), bondingCurveToken.balanceOf(vitalik));
+        assertGt(bondingCurveToken.balanceOf(vitalik), bondingCurveToken.balanceOf(sam));
     }
 
     function testBurn() public {
