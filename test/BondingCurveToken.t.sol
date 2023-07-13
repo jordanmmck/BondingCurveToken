@@ -60,7 +60,7 @@ contract BondingCurveTokenTest is Test {
         assertGt(bondingCurveToken.balanceOf(vitalik), bondingCurveToken.balanceOf(sam));
     }
 
-    function testBurn() public {
+    function testBurnRoot2() public {
         vm.prank(jordan);
         purchaseToken.freeMint(1e18);
         uint256 initBalance = purchaseToken.balanceOf(jordan);
@@ -76,10 +76,30 @@ contract BondingCurveTokenTest is Test {
         uint256 balance = bondingCurveToken.balanceOf(jordan);
         vm.prank(jordan);
         bondingCurveToken.burnOnCurve(balance);
-        console.log("BCT balance:", bondingCurveToken.balanceOf(jordan));
 
         console.log("PCT balance:", purchaseToken.balanceOf(jordan));
-        // this test will fail because of rounding errors / precision loss
+        // this test will fail because of precision loss
         // assertEq(purchaseToken.balanceOf(jordan), initBalance);
+    }
+
+    function testBurnRoot36() public {
+        vm.prank(jordan);
+        purchaseToken.freeMint(18e18);
+        uint256 initBalance = purchaseToken.balanceOf(jordan);
+        console.log("PCT balance:", initBalance);
+
+        // mint on curve by sending PurchaseTokens to BondingCurveToken
+        vm.prank(jordan);
+        purchaseToken.transferAndCall(address(bondingCurveToken), 18e18);
+        assertGt(bondingCurveToken.balanceOf(jordan), 0);
+        console.log("BCT balance:", bondingCurveToken.balanceOf(jordan));
+
+        // burn tokens and get PurchaseTokens back
+        uint256 balance = bondingCurveToken.balanceOf(jordan);
+        vm.prank(jordan);
+        bondingCurveToken.burnOnCurve(balance);
+
+        console.log("PCT balance:", purchaseToken.balanceOf(jordan));
+        assertEq(purchaseToken.balanceOf(jordan), initBalance);
     }
 }
