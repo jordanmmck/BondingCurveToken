@@ -15,6 +15,7 @@ contract BondingCurveToken is ERC1363, IERC1363Receiver, IERC1363Spender {
         purchaseToken = _purchaseToken;
     }
 
+    // should the function arguments be prefixed with _?
     function onTransferReceived(address, address sender, uint256 amount, bytes calldata)
         external
         override
