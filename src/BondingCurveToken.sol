@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity 0.8.18;
 
 import {ERC1363} from "@vittominacori/contracts/token/ERC1363/ERC1363.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -9,13 +9,14 @@ import {IERC1363Spender} from "@openzeppelin/contracts/interfaces/IERC1363Spende
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 
 contract BondingCurveToken is ERC1363, IERC1363Receiver, IERC1363Spender {
-    address public purchaseToken;
+    address public immutable purchaseToken;
 
     constructor(address _purchaseToken) ERC20("BondingCurveToken", "BCT") {
+        require(_purchaseToken != address(0), "purchaseToken cannot be zero address");
         purchaseToken = _purchaseToken;
     }
 
-    // should the function arguments be prefixed with _?
+    // slither complains about arbitrary `from`, but the `from` is never used
     function onTransferReceived(address, address sender, uint256 amount, bytes calldata)
         external
         override

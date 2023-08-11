@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity 0.8.18;
 
 import "forge-std/Test.sol";
 import "../src/BondingCurveToken.sol";
@@ -38,6 +38,39 @@ contract BondingCurveTokenTest is Test {
 
         // assert non-zero BondingCurveTokens
         assertGt(bondingCurveToken.balanceOf(jordan), 0);
+    }
+
+    function testOnTransferReceivedFailWrongSender() public {
+        vm.expectRevert("only purchaseToken can mint");
+        bondingCurveToken.onTransferReceived(address(0), address(0), 0, "");
+    }
+
+    function testOnTransferReceivedFailAmount() public {
+        vm.expectRevert("amount must be greater than 0");
+        vm.prank(address(purchaseToken));
+        bondingCurveToken.onTransferReceived(address(0), address(0), 0, "");
+    }
+
+    function testOnApprovalReceivedSuccess() public {
+        vm.prank(jordan);
+        purchaseToken.freeMint(1e18);
+
+        vm.prank(jordan);
+        purchaseToken.increaseAllowance(address(bondingCurveToken), 1e18);
+
+        vm.prank(address(purchaseToken));
+        bondingCurveToken.onApprovalReceived(jordan, 1e18, "");
+    }
+
+    function testOnApprovalReceivedFailSender() public {
+        vm.expectRevert("only purchaseToken can mint");
+        bondingCurveToken.onApprovalReceived(address(0), 1e18, "");
+    }
+
+    function testOnApprovalReceivedFailAmount() public {
+        vm.prank(address(purchaseToken));
+        vm.expectRevert("amount must be greater than 0");
+        bondingCurveToken.onApprovalReceived(address(0), 0, "");
     }
 
     function testMintCurve() public {
